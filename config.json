@@ -10,12 +10,12 @@
 	    {
 		"serial": "NBASVPZVHLUVMVEP",
                 "type": "fadecandy",
-                "map": [[ 0, 0, 0, 384 ]]
+                "map": [[ 0, 0, 0, 384, "grb" ]]
 	    },
 	    {
 		"serial": "QANTWIVNBNODSLCZ",
                 "type": "fadecandy",
-                "map": [[ 0, 384, 0, 512 ]]
+                "map": [[ 0, 384, 0, 384, "grb" ]]
 	    },
             {
                 "type": "fadecandy",
