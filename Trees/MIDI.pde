@@ -35,61 +35,6 @@ class MidiEngine {
       
       // Add this input to the midi engine so that events are recorded
       lx.engine.midiEngine.addInput(apcInput);
-      lx.engine.midiEngine.addListener(new LXAbstractMidiListener() {
-        public void noteOnReceived(LXMidiNoteOn note) {
-          int channel = note.getChannel();
-          int pitch = note.getPitch();
-          switch (pitch) {
-          case APC40.CLIP_LAUNCH:
-          case APC40.CLIP_LAUNCH+1:
-          case APC40.CLIP_LAUNCH+2:
-          case APC40.CLIP_LAUNCH+3:
-          case APC40.CLIP_LAUNCH+4:
-            apc40Drumpad.padTriggered(pitch - APC40.CLIP_LAUNCH, channel, drumpadVelocity.getValuef());
-            break;
-          case APC40.CLIP_STOP:
-            apc40Drumpad.padTriggered(5, channel, drumpadVelocity.getValuef());
-            break;
-          case APC40.SCENE_LAUNCH:
-          case APC40.SCENE_LAUNCH+1:
-          case APC40.SCENE_LAUNCH+2:
-          case APC40.SCENE_LAUNCH+3:
-          case APC40.SCENE_LAUNCH+4:
-            apc40Drumpad.padTriggered(pitch - APC40.SCENE_LAUNCH, 8, drumpadVelocity.getValuef());
-            break;
-          case APC40.STOP_ALL_CLIPS:
-            apc40Drumpad.padTriggered(5, 8, drumpadVelocity.getValuef());
-            break;
-          }
-        }
-        
-        public void noteOffReceived(LXMidiNoteOff note) {
-          int channel = note.getChannel();
-          int pitch = note.getPitch();
-          switch (pitch) {
-          case APC40.CLIP_LAUNCH:
-          case APC40.CLIP_LAUNCH+1:
-          case APC40.CLIP_LAUNCH+2:
-          case APC40.CLIP_LAUNCH+3:
-          case APC40.CLIP_LAUNCH+4:
-            apc40Drumpad.padReleased(pitch - APC40.CLIP_LAUNCH, channel);
-            break;
-          case APC40.CLIP_STOP:
-            apc40Drumpad.padReleased(5, channel);
-            break;
-          case APC40.SCENE_LAUNCH:
-          case APC40.SCENE_LAUNCH+1:
-          case APC40.SCENE_LAUNCH+2:
-          case APC40.SCENE_LAUNCH+3:
-          case APC40.SCENE_LAUNCH+4:
-            apc40Drumpad.padReleased(pitch - APC40.SCENE_LAUNCH, 8);
-            break;
-          case APC40.STOP_ALL_CLIPS:
-            apc40Drumpad.padReleased(5, 8);
-            break;
-          }
-        }
-      });
 
       final APC40 apc40 = new APC40(apcInput, apcOutput) {
         protected void noteOn(LXMidiNoteOn note) {
@@ -136,24 +81,6 @@ class MidiEngine {
           }
         }
       };
-
-      for (int row = 0; row < apc40Drumpad.triggerables.length && row < 6; row++) {
-        int midiNumber;
-        if (row < 5) {
-          midiNumber = APC40.CLIP_LAUNCH + row;
-        } else {
-          midiNumber = APC40.CLIP_STOP;
-        }
-        for (int col = 0; col < apc40Drumpad.triggerables[row].length && col < 9; col++) {
-          if (col < 8) {
-            apc40.bindNote(nfcToggles[row][col], col, midiNumber, APC40.DIRECT);
-          } else if (row < 5) {
-            apc40.bindNote(nfcToggles[row][col], 0, APC40.SCENE_LAUNCH + row, APC40.DIRECT);
-            // stop all clips button doesn't light up. Doesn't have an LED in it
-            // apc40.bindNote(new BooleanParameter("ANON", false), 0, APC40.STOP_ALL_CLIPS, APC40.DIRECT);
-          }
-        }
-      }
       
       int[] channelIndices = new int[NUM_CHANNELS];
       for (int i = 0; i < NUM_CHANNELS; ++i) {

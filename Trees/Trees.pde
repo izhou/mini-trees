@@ -126,62 +126,7 @@ LXPattern[] getPatternListForChannels() {
   return patterns.toArray(new LXPattern[patterns.size()]);
 }
 
-void registerPatternTriggerables() {
-  // The 2nd parameter is the NFC tag serial number
-  // Specify a blank string to only add it to the apc40 drumpad
-  // The 3rd parameter is which row of the apc40 drumpad to add it to.
-  // defaults to the 3rd row
-  // the row parameter is zero indexed
-
-  registerPattern(new Twister(lx), "3707000050a8fb");
-  registerPattern(new MarkLottor(lx), "3707000050a8d5");
-  registerPattern(new Ripple(lx), "3707000050a908");
-  registerPattern(new Stripes(lx), "3707000050a8ad");
-  registerPattern(new Lattice(lx), "3707000050a8b9");
-  registerPattern(new Fumes(lx), "3707000050a9b1");
-  registerPattern(new Voronoi(lx), "3707000050a952");
-  registerPattern(new CandyCloud(lx), "3707000050aab4");
-  registerPattern(new GalaxyCloud(lx), "3707000050a91d");
-
-  registerPattern(new ColorStrobe(lx), "3707000050a975", 3);
-  registerPattern(new Explosions(lx, 20), "3707000050a8bf", 3);
-  registerPattern(new Strobe(lx), "3707000050ab3a", 3);
-  registerPattern(new SparkleTakeOver(lx), "3707000050ab68", 3);
-  registerPattern(new MultiSine(lx), "3707000050ab38", 3);
-  registerPattern(new SeeSaw(lx), "3707000050ab76", 3);
-  registerPattern(new Cells(lx), "3707000050abca", 3);
-  registerPattern(new Fade(lx), "3707000050a8b0", 3);
-  registerPattern(new Pixels(lx), "3707000050ab38", 3);
-  
-  registerPattern(new IceCrystals(lx), "3707000050a89b", 5);
-  registerPattern(new Fire(lx), "-", 5); // Make red
-  
-  // registerPattern(new DoubleHelix(lx), "");
-  registerPattern(new AcidTrip(lx), "3707000050a914");
-  registerPattern(new Rain(lx), "3707000050a937");
-
-  registerPattern(new Wisps(lx, 1, 60, 50, 270, 20, 3.5, 10), "3707000050a905"); // downward yellow wisp
-  registerPattern(new Wisps(lx, 30, 210, 100, 90, 20, 3.5, 10), "3707000050ab1a"); // colorful wisp storm
-  registerPattern(new Wisps(lx, 1, 210, 100, 90, 130, 3.5, 10), "3707000050aba4"); // multidirection colorful wisps
-  registerPattern(new Wisps(lx, 3, 210, 10, 270, 0, 3.5, 10), ""); // rain storm of wisps
-  registerPattern(new Wisps(lx, 35, 210, 180, 180, 15, 2, 15), "3707000050a8ee"); // twister of wisps
-}
-
-void registerOneShotTriggerables() {
-  registerOneShot(new Pulleys(lx), "3707000050a939");
-  registerOneShot(new StrobeOneshot(lx), "3707000050abb0");
-  registerOneShot(new BassSlam(lx), "3707000050a991");
-  registerOneShot(new Fireflies(lx, 70, 6, 180), "3707000050ab2e");
-  registerOneShot(new Fireflies(lx, 40, 7.5, 90), "3707000050a92b");
-
-  registerOneShot(new Fireflies(lx), "3707000050ab56", 5);
-  registerOneShot(new Bubbles(lx), "3707000050a8ef", 5);
-  registerOneShot(new Lightning(lx), "3707000050ab18", 5);
-  registerOneShot(new Wisps(lx), "3707000050a9cd", 5);
-  registerOneShot(new Explosions(lx), "3707000050ab6a", 5);
-}
-
-void registerEffectTriggerables() {
+void registerEffects() {
   BlurEffect blurEffect = new BlurEffect(lx);
   ColorEffect colorEffect = new ColorEffect(lx);
   GhostEffect ghostEffect = new GhostEffect(lx);
@@ -210,23 +155,6 @@ void registerEffectTriggerables() {
   lx.addEffect(candyTextureEffect);
   lx.addEffect(candyCloudTextureEffect);
 
-  registerEffectControlParameter(speedEffect.speed, "3707000050abae", 1, 0.4);
-  registerEffectControlParameter(speedEffect.speed, "3707000050a916", 1, 5);
-  registerEffectControlParameter(colorEffect.rainbow, "3707000050a98f");
-  registerEffectControlParameter(colorEffect.mono, "3707000050aafe");
-  registerEffectControlParameter(colorEffect.desaturation, "3707000050a969");
-  registerEffectControlParameter(colorEffect.sharp, "3707000050aafc");
-  registerEffectControlParameter(blurEffect.amount, "3707000050a973", 0.65);
-  registerEffectControlParameter(spinEffect.spin, "3707000050ab2c", 0.65);
-  registerEffectControlParameter(ghostEffect.amount, "3707000050aaf2", 0, 0.16, 1);
-  registerEffectControlParameter(scrambleEffect.amount, "3707000050a8cc", 0, 1, 1);
-  registerEffectControlParameter(colorStrobeTextureEffect.amount, "3707000050a946", 0, 1, 1);
-  registerEffectControlParameter(fadeTextureEffect.amount, "3707000050a967", 0, 1, 1);
-  registerEffectControlParameter(acidTripTextureEffect.amount, "3707000050a953", 0, 1, 1);
-  registerEffectControlParameter(candyCloudTextureEffect.amount, "3707000050a92d", 0, 1, 1);
-  registerEffectControlParameter(staticEffect.amount, "3707000050a8b3", 0, .3, 1);
-  registerEffectControlParameter(candyTextureEffect.amount, "3707000050aafc", 0, 1, 5);
-
   effectKnobParameters = new LXListenableNormalizedParameter[] {
     colorEffect.hueShift,
     colorEffect.mono,
@@ -239,28 +167,12 @@ void registerEffectTriggerables() {
   };
 }
 
-VisualType[] readerPatternTypeRestrictions() {
-  return new VisualType[] {
-    VisualType.Pattern,
-    VisualType.Pattern,
-    VisualType.Pattern,
-    VisualType.OneShot,
-    VisualType.OneShot,
-    VisualType.OneShot,
-    VisualType.Effect,
-    VisualType.Effect,
-    VisualType.Effect,
-    VisualType.Pattern,
-  };
-}
-
 static JSONArray clusterConfig;
 static Geometry geometry = new Geometry();
 
 Model model;
 P2LX lx;
-LXDatagramOutput output;
-LXDatagram[] datagrams;
+FadecandyOutput output;
 UIChannelFaders uiFaders;
 UIMultiDeck uiDeck;
 final BasicParameter bgLevel = new BasicParameter("BG", 25, 0, 50);
@@ -273,10 +185,7 @@ BooleanParameter[] automationStop = new BooleanParameter[NUM_AUTOMATION];
 DiscreteParameter automationSlot = new DiscreteParameter("AUTO", NUM_AUTOMATION);
 LXListenableNormalizedParameter[] effectKnobParameters;
 MidiEngine midiEngine;
-TSDrumpad apc40Drumpad;
-NFCEngine nfcEngine;
 SpeedIndependentContainer speedIndependentContainer;
-BooleanParameter[][] nfcToggles = new BooleanParameter[6][9];
 
 void setup() {
   size(1148, 720, OPENGL);
@@ -292,22 +201,15 @@ void setup() {
 
   configureChannels();
 
-  configureNFC();
-
-  // uncomment this to allow any nfc reader to read any cube
-  nfcEngine.disableVisualTypeRestrictions = true;
-
-  configureTriggerables();
+  registerEffects();
 
   lx.addEffect(mappingTool = new MappingTool(lx));
   lx.engine.addLoopTask(new ModelTransformTask());
-  lx.addEffect(new TurnOffDeadPixelsEffect(lx));
 
   configureBMPTool();
 
   configureAutomation();
 
-  configureExternalOutput();
   configureFadeCandyOutput();
 
   configureUI();
@@ -354,70 +256,6 @@ void configureChannels() {
   }
 }
 
-void registerOneShot(TSPattern pattern, String nfcSerialNumber) {
-  registerOneShot(pattern, nfcSerialNumber, 4);
-}
-
-void registerOneShot(TSPattern pattern, String nfcSerialNumber, int apc40DrumpadRow) {
-  registerVisual(pattern, nfcSerialNumber, apc40DrumpadRow, VisualType.OneShot);
-}
-
-void registerPattern(TSPattern pattern, String nfcSerialNumber) {
-  registerPattern(pattern, nfcSerialNumber, 2);
-}
-
-void registerPattern(TSPattern pattern, String nfcSerialNumber, int apc40DrumpadRow) {
-  registerVisual(pattern, nfcSerialNumber, apc40DrumpadRow, VisualType.Pattern);
-}
-
-void registerVisual(TSPattern pattern, String nfcSerialNumber, int apc40DrumpadRow, VisualType visualType) {
-  LXTransition t = new DissolveTransition(lx).setDuration(dissolveTime);
-  pattern.setTransition(t);
-
-  Triggerable triggerable = configurePatternAsTriggerable(pattern);
-  BooleanParameter toggle = apc40DrumpadTriggerablesLists[apc40DrumpadRow].size() < 9 ? nfcToggles[apc40DrumpadRow][apc40DrumpadTriggerablesLists[apc40DrumpadRow].size()] : null;
-  nfcEngine.registerTriggerable(nfcSerialNumber, triggerable, visualType, toggle);
-  apc40DrumpadTriggerablesLists[apc40DrumpadRow].add(triggerable);
-}
-
-Triggerable configurePatternAsTriggerable(TSPattern pattern) {
-  LXChannel channel = lx.engine.addChannel(new TSPattern[] { pattern });
-  setupChannel(channel, true);
-
-  pattern.onTriggerableModeEnabled();
-  return pattern.getTriggerable();
-}
-
-/* configureEffects */
-
-void registerEffect(LXEffect effect, String nfcSerialNumber) {
-  if (effect instanceof Triggerable) {
-    Triggerable triggerable = (Triggerable)effect;
-    BooleanParameter toggle = apc40DrumpadTriggerablesLists[0].size() < 9 ? nfcToggles[0][apc40DrumpadTriggerablesLists[0].size()] : null;
-    nfcEngine.registerTriggerable(nfcSerialNumber, triggerable, VisualType.Effect, toggle);
-    apc40DrumpadTriggerablesLists[0].add(triggerable);
-  }
-}
-
-void registerEffectControlParameter(LXListenableNormalizedParameter parameter, String nfcSerialNumber) {
-  registerEffectControlParameter(parameter, nfcSerialNumber, 0, 1, 0);
-}
-
-void registerEffectControlParameter(LXListenableNormalizedParameter parameter, String nfcSerialNumber, double onValue) {
-  registerEffectControlParameter(parameter, nfcSerialNumber, 0, onValue, 0);
-}
-
-void registerEffectControlParameter(LXListenableNormalizedParameter parameter, String nfcSerialNumber, double offValue, double onValue) {
-  registerEffectControlParameter(parameter, nfcSerialNumber, offValue, onValue, 0);
-}
-
-void registerEffectControlParameter(LXListenableNormalizedParameter parameter, String nfcSerialNumber, double offValue, double onValue, int row) {
-  ParameterTriggerableAdapter triggerable = new ParameterTriggerableAdapter(parameter, offValue, onValue);
-    BooleanParameter toggle = apc40DrumpadTriggerablesLists[row].size() < 9 ? nfcToggles[row][apc40DrumpadTriggerablesLists[row].size()] : null;
-  nfcEngine.registerTriggerable(nfcSerialNumber, triggerable, VisualType.Effect, toggle);
-  apc40DrumpadTriggerablesLists[row].add(triggerable);
-}
-
 /* configureBMPTool */
 
 void configureBMPTool() {
@@ -459,56 +297,11 @@ void configureAutomation() {
   }
 }
 
-/* configureTriggerables */
-
-ArrayList<Triggerable>[] apc40DrumpadTriggerablesLists;
-Triggerable[][] apc40DrumpadTriggerables;
-
-void configureTriggerables() {
-  apc40DrumpadTriggerablesLists = new ArrayList[] {
-    new ArrayList<Triggerable>(),
-    new ArrayList<Triggerable>(),
-    new ArrayList<Triggerable>(),
-    new ArrayList<Triggerable>(),
-    new ArrayList<Triggerable>(),
-    new ArrayList<Triggerable>()
-  };
-
-  registerPatternTriggerables();
-  registerOneShotTriggerables();
-  registerEffectTriggerables();
-
-  apc40DrumpadTriggerables = new Triggerable[apc40DrumpadTriggerablesLists.length][];
-  for (int i = 0; i < apc40DrumpadTriggerablesLists.length; i++) {
-    ArrayList<Triggerable> triggerablesList= apc40DrumpadTriggerablesLists[i];
-    apc40DrumpadTriggerables[i] = triggerablesList.toArray(new Triggerable[triggerablesList.size()]);
-  }
-  apc40DrumpadTriggerablesLists = null;
-}
-
 /* configureMIDI */
 
 void configureMIDI() {
-  apc40Drumpad = new TSDrumpad();
-  apc40Drumpad.triggerables = apc40DrumpadTriggerables;
-
   // MIDI control
   midiEngine = new MidiEngine(effectKnobParameters);
-}
-
-/* configureNFC */
-
-void configureNFC() {
-  nfcEngine = new NFCEngine(lx);
-  nfcEngine.start();
-  
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 9; j++) {
-      nfcToggles[i][j] = new BooleanParameter("toggle");
-    }
-  }
-
-  nfcEngine.registerReaderPatternTypeRestrictions(Arrays.asList(readerPatternTypeRestrictions()));
 }
 
 /* configureUI */
@@ -532,31 +325,12 @@ void configureUI() {
     .setPhi(10*PI/180)
     .addComponent(new UITrees())
   );
-  lx.ui.addLayer(new UIOutput(lx.ui, 4, 4));
   lx.ui.addLayer(new UIMapping(lx.ui));
   lx.ui.addLayer(uiFaders = new UIChannelFaders(lx.ui));
   lx.ui.addLayer(new UIEffects(lx.ui, effectKnobParameters));
   lx.ui.addLayer(uiDeck = new UIMultiDeck(lx.ui));
   lx.ui.addLayer(new UILoopRecorder(lx.ui));
   lx.ui.addLayer(new UIMasterBpm(lx.ui, Trees.this.width-144, 4, bpmTool));
-}
-
-/* configureExternalOutput */
-
-void configureExternalOutput() {
-  // Output stage
-  try {
-    output = new LXDatagramOutput(lx);
-    datagrams = new LXDatagram[model.clusters.size()];
-    int ci = 0;
-    for (Cluster cluster : model.clusters) {
-      output.addDatagram(datagrams[ci++] = clusterDatagram(cluster).setAddress(cluster.ipAddress));
-    }
-    output.enabled.setValue(false);
-    lx.addOutput(output);
-  } catch (Exception x) {
-    println(x);
-  }
 }
 
 /* configureFadeCandyOutput */
@@ -572,8 +346,8 @@ void configureFadeCandyOutput() {
     }
   }
   try {
-    FadecandyOutput fadecandyOutput = new FadecandyOutput(lx, "127.0.0.1", 7890, pixelOrder);
-    lx.addOutput(fadecandyOutput);
+    output = new FadecandyOutput(lx, "127.0.0.1", 7890, pixelOrder);
+    lx.addOutput(output);
   } catch (Exception e) {
     println(e);
   }
