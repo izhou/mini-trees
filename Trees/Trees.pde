@@ -421,16 +421,3 @@ class BooleanProxyParameter extends BooleanParameter {
   }
 }
 
-void keyPressed() {
-  switch (key) {
-    case 'a':
-      if (datagrams.length > 0) {
-        boolean toEnable = !datagrams[0].enabled.isOn();
-        for (LXDatagram datagram : datagrams) {
-          datagram.enabled.setValue(toEnable);
-        }
-      }
-      break;
-  }
-}
-
