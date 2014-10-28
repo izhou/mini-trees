@@ -84,7 +84,6 @@ LXPattern[] getPatternListForChannels() {
   patterns.add(new IceCrystals(lx));
   patterns.add(new ColoredLeaves(lx));
   patterns.add(new Stripes(lx));
-  try { patterns.add(new SyphonPattern(lx, this)); } catch (Throwable e) {}
   patterns.add(new AcidTrip(lx));
   patterns.add(new Springs(lx));
   patterns.add(new Lattice(lx));
@@ -115,8 +114,6 @@ LXPattern[] getPatternListForChannels() {
   patterns.add(new GalaxyCloud(lx));
   patterns.add(new Verty(lx));
   patterns.add(new Spinny(lx));
-
-  patterns.add(new CameraWrap(lx));
 
   for (LXPattern pattern : patterns) {
     LXTransition t = new DissolveTransition(lx).setDuration(dissolveTime);
