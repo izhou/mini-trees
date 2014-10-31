@@ -11,8 +11,8 @@ class Twinkle extends TSPattern {
     super(lx);
     addParameter(brightnessParam);
 
-    sparkleTimeOuts = new int[model.cubes.size()];
-    cubeToModulatorMapping = new int[model.cubes.size()];
+    sparkleTimeOuts = new int[Trees.this.model.cubes.size()];
+    cubeToModulatorMapping = new int[Trees.this.model.cubes.size()];
 
     for (int i = 0; i < cubeToModulatorMapping.length; i++ ) {
       cubeToModulatorMapping[i] = int(random(numBrights));
@@ -44,7 +44,7 @@ class Twinkle extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       if (sparkleTimeOuts[cube.index] < millis()) {
         // randomly change modulators        
         if (random(10) <= 3) {
@@ -87,7 +87,7 @@ class VerticalSweep extends TSPattern {
       };
       int saturation = (int) saturationParam.getValuef();
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float progress = ((cube.transformedTheta / 360.0) + range.getValuef()) % 1; // value is 0-1
       float scaledProgress = (colorPalette.length) * progress; // value is 0-3
       int color1Index = floor(scaledProgress);

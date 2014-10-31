@@ -16,7 +16,7 @@ class MappingTool extends LXEffect {
   }
   
   Cluster getCluster() {
-    return model.clustersByIp.get(getConfig().getString("ipAddress"));
+    return Trees.this.model.clustersByIp.get(getConfig().getString("ipAddress"));
   }
 
   public void run(double deltaMs) {
@@ -31,7 +31,7 @@ class MappingTool extends LXEffect {
     public void run(double deltaMs) {
       if (isEnabled()) {
         for (Cube cube : getCluster().cubes) {
-          colors[cube.index] = blendColor(lx.hsb(0, 0, strobe.getValuef()), colors[cube.index], ADD);
+          blendColor(cube.index, lx.hsb(0, 0, strobe.getValuef()), LXColor.Blend.ADD);
         }
       }
     }
@@ -141,7 +141,7 @@ class UIMapping extends UIWindow {
     setCluster();
   }
   
-  float labelRow(float yPos, String label, UIObject obj) {
+  float labelRow(float yPos, String label, UI2dComponent obj) {
     new UILabel(4, yPos+5, 50, 20)
     .setLabel(label)
     .addToContainer(this);

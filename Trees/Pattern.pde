@@ -41,6 +41,10 @@ abstract class TSTriggerablePattern extends TSPattern implements Triggerable {
     return this;
   }
 
+  public boolean isTriggered() {
+    return triggered;
+  }
+
   public void onTriggered(float strength) {
     if (patternMode == PATTERN_MODE_TRIGGER || patternMode == PATTERN_MODE_FIRED) {
       getChannel().enabled.setValue(true);

@@ -21,13 +21,13 @@ class SparkleHelix extends TSPattern {
     addModulator(coil).start();    
     addModulator(spin).start();
     addModulator(width).start();
-    sparkleTimeOuts = new int[model.cubes.size()];
+    sparkleTimeOuts = new int[Trees.this.model.cubes.size()];
   }
   
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float compensatedWidth = (0.7 + .02 / coil.getValuef()) * width.getValuef();
       float spiralVal = max(0, 100 - (100*TWO_PI / (compensatedWidth))*LXUtils.wrapdistf((TWO_PI / 360) * cube.transformedTheta, 8*TWO_PI + spin.getValuef() + coil.getValuef()*(cube.transformedY-model.cy), TWO_PI));
       float counterSpiralVal = counterSpiralStrength.getValuef() * max(0, 100 - (100*TWO_PI / (compensatedWidth))*LXUtils.wrapdistf((TWO_PI / 360) * cube.transformedTheta, 8*TWO_PI - spin.getValuef() - coil.getValuef()*(cube.transformedY-model.cy), TWO_PI));
@@ -77,7 +77,7 @@ class MultiSine extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float[] combinedDistanceSines = {0, 0};
       for (int i = 0; i < numLayers; i++){
         combinedDistanceSines[0] += sin(TWO_PI * frequencies[i].getValuef() + cube.transformedY / distLayerDivisors[0][i]) / numLayers;
@@ -110,7 +110,7 @@ class Stripes extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {  
+    for (Cube cube : Trees.this.model.cubes) {  
       float hueVal = (lx.getBaseHuef() + .1*cube.transformedY) % 360;
       float brightVal = 50 + 50 * sin(spacing.getValuef() * (sin((TWO_PI / 360) * 4 * cube.transformedTheta) + slopeFactor.getValuef() * cube.transformedY)); 
       colors[cube.index] = lx.hsb(hueVal,  100, brightVal);
@@ -148,7 +148,7 @@ class Ripple extends TSPattern {
       resetDone = false;
     }
     float radius = pow(rippleAge.getValuef(), 2) / 3;
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float distVal = sqrt(pow((LXUtils.wrapdistf(thetaCenter, cube.transformedTheta, 360)) * 0.8, 2) + pow(yCenter - cube.transformedY, 2));
       float heightHueVariance = 0.1 * cube.transformedY;
       if (distVal < radius){
@@ -182,7 +182,7 @@ class SparkleTakeOver extends TSPattern {
   float oldBrightVal = 100;
   SparkleTakeOver(LX lx) {
     super(lx);
-    sparkleTimeOuts = new int[model.cubes.size()];
+    sparkleTimeOuts = new int[Trees.this.model.cubes.size()];
     addModulator(timing).start();    
     addModulator(coverage).start();
     addParameter(hueVariation);
@@ -201,7 +201,7 @@ class SparkleTakeOver extends TSPattern {
         else {
           newBrightVal = (newBrightVal == 100) ? 70 : 100;          
         }
-        for (int i = 0; i < model.cubes.size(); i++){
+        for (int i = 0; i < Trees.this.model.cubes.size(); i++){
           sparkleTimeOuts[i] = 0;
         }        
         resetDone = true;
@@ -210,7 +210,7 @@ class SparkleTakeOver extends TSPattern {
     else {
       resetDone = false;
     }
-    for (Cube cube : model.cubes) {  
+    for (Cube cube : Trees.this.model.cubes) {  
       float newHueVal = (lx.getBaseHuef() + complimentaryToggle * hueSeparation + hueVariation.getValuef() * cube.transformedY) % 360;
       float oldHueVal = (lx.getBaseHuef() + lastComplimentaryToggle * hueSeparation + hueVariation.getValuef() * cube.transformedY) % 360;
       if (sparkleTimeOuts[cube.index] > millis()){        
@@ -262,7 +262,7 @@ class Lightning extends TSTriggerablePattern {
 
     int treeIndex = 0;
     
-    for (Tree tree : model.trees){
+    for (Tree tree : Trees.this.model.trees){
       if (bolts[treeIndex].isDead()) {
         if (triggered) {
           if (firesOnBeat.isOn()) {
@@ -317,7 +317,7 @@ class Lightning extends TSTriggerablePattern {
     
     int treeIndex = 0;
     
-    for (Tree tree : model.trees){
+    for (Tree tree : Trees.this.model.trees){
       if (bolts[treeIndex].isDead()){
         randomCheckTimeOuts[treeIndex] = millis() + 100;
         bolts[treeIndex] = makeBolt();
@@ -441,7 +441,7 @@ class IceCrystals extends TSPattern {
       startCrystal();
     }
     crystal.doUpdate();
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float lineFactor = crystal.getLineFactor(cube.transformedY, cube.transformedTheta);
       if (lineFactor > 110) {
         lineFactor = 200 - lineFactor;  

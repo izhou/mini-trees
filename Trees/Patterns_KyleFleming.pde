@@ -8,7 +8,7 @@ class TurnOffDeadPixelsEffect extends LXEffect {
   
   void run(double deltaMs) {
     for (int i = 0; i < deadPixelIndices.length; i++) {
-      Cluster cluster = model.clusters.get(deadPixelClusters[i]);
+      Cluster cluster = Trees.this.model.clusters.get(deadPixelClusters[i]);
       Cube cube = cluster.cubes.get(deadPixelIndices[i]);
       colors[cube.index] = BLACK;
     }
@@ -82,7 +82,7 @@ class BassSlam extends TSTriggerablePattern {
       }
       y = max(0, 100 * (y - 1) + 250);
       
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         setColor(cube.index, lx.hsb(patternHue, 100, LXUtils.constrainf(100 - 2 * abs(y - cube.transformedY), 0, 100)));
       }
     }
@@ -150,7 +150,7 @@ abstract class MultiObjectPattern <ObjectType extends MultiObject> extends TSTri
     }
     
     if (shouldAutofade) {
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         blendColor(cube.index, lx.hsb(0, 0, 100 * max(0, (float)(1 - deltaMs / fadeTime))), LXColor.Blend.MULTIPLY);
       }
     } else {
@@ -214,8 +214,8 @@ abstract class MultiObject extends LXLayer {
         advance(deltaMs);
       }
       if (running) {
-        for (Cube cube : model.cubes) {
-          colors[cube.index] = blendColor(colors[cube.index], getColorForCube(cube), LIGHTEST);
+        for (Cube cube : Trees.this.model.cubes) {
+          blendColor(cube.index, getColorForCube(cube), LXColor.Blend.LIGHTEST);
         }
       }
     }
@@ -607,7 +607,7 @@ class RandomColor extends TSPattern {
 
     frameCount++;
     if (frameCount >= speed.getValuef()) {
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         colors[cube.index] = lx.hsb(
           random(360),
           100,
@@ -637,13 +637,13 @@ class RandomColorGlitch extends TSPattern {
     super(lx);
   }
   
-  final int brokenCubeIndex = (int)random(model.cubes.size());
+  final int brokenCubeIndex = (int)random(Trees.this.model.cubes.size());
   final int cubeColor = (int)random(360);
   
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       if (cube.index == brokenCubeIndex) {
         colors[cube.index] = lx.hsb(
           random(360),
@@ -678,7 +678,7 @@ class Fade extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(
         (int)((int)colr.getValuef() * smoothness.getValuef() / 100) * 100 / smoothness.getValuef(), 
         100, 
@@ -701,7 +701,7 @@ class OrderTest extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(
         240,
         100,
@@ -720,7 +720,7 @@ class Palette extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(
         cube.index % 360,
         100,
@@ -766,7 +766,7 @@ class ClusterLineTest extends TSPattern {
     if (getChannel().getFader().getNormalized() == 0) return;
     
     PVector origin = new PVector(theta.getValuef(), y.getValuef());
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       PVector cubePointPrime = movePointToSamePlane(origin, cube.transformedCylinderPoint);
       float dist = origin.dist(cubePointPrime);
       float cubeTheta = (spin.getValuef() + 15) + PVector.sub(cubePointPrime, origin).heading() * 180 / PI + 360;
@@ -855,8 +855,8 @@ class GhostEffect extends LXEffect {
           }
           
           for (int i = 0; i < colors.length; i++) {
-            ghostColors[i] = blendColor(ghostColors[i], lx.hsb(0, 0, 100 * max(0, (float)(1 - deltaMs / lifetime))), MULTIPLY);
-            colors[i] = blendColor(colors[i], ghostColors[i], LIGHTEST);
+            ghostColors[i] = LXColor.blend(ghostColors[i], lx.hsb(0, 0, 100 * max(0, (float)(1 - deltaMs / lifetime))), LXColor.Blend.MULTIPLY);
+            blendColor(i, ghostColors[i], LXColor.Blend.LIGHTEST);
           }
         }
       }
@@ -877,7 +877,7 @@ class ScrambleEffect extends LXEffect {
   }
   
   protected void run(double deltaMs) {
-    for (Tree tree : model.trees) {
+    for (Tree tree : Trees.this.model.trees) {
       for (int i = min(tree.cubes.size(), amount.getValuei()); i > 0; i--) {
         colors[tree.cubes.get(i).index] = colors[tree.cubes.get((i + offset) % tree.cubes.size()).index];
       }
@@ -945,7 +945,7 @@ class RotationEffect extends ModelTransform {
   void transform(Model model) {
     if (rotation.getValue() > 0) {
       float rotationTheta = rotation.getValuef();
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         cube.transformedTheta = (cube.transformedTheta + 360 - rotationTheta) % 360;
       }
     }
@@ -982,7 +982,7 @@ class SpinEffect extends ModelTransform {
   void transform(Model model) {
     if (rotation.getValue() > 0 && rotation.getValue() < 360) {
       float rotationTheta = rotation.getValuef();
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         cube.transformedTheta = (cube.transformedTheta + 360 - rotationTheta) % 360;
       }
     }
@@ -1051,7 +1051,7 @@ class AcidTripTextureEffect extends LXEffect {
     if (amount.getValue() > 0) {
       for (int i = 0; i < colors.length; i++) {
         int oldColor = colors[i];
-        Cube cube = model.cubes.get(i);
+        Cube cube = Trees.this.model.cubes.get(i);
         float newHue = abs(model.cy - cube.transformedY) + abs(model.cy - cube.transformedTheta) + trails.getValuef() % 360;
         int newColor = lx.hsb(newHue, 100, 100);
         int blendedColor = lerpColor(oldColor, newColor, amount.getValuef());
@@ -1102,7 +1102,7 @@ class CandyCloudTextureEffect extends LXEffect {
       time += deltaMs;
       for (int i = 0; i < colors.length; i++) {
         int oldColor = colors[i];
-        Cube cube = model.cubes.get(i);
+        Cube cube = Trees.this.model.cubes.get(i);
 
         double adjustedX = cube.x / scale;
         double adjustedY = cube.y / scale;
@@ -1138,7 +1138,7 @@ class CandyCloud extends TSPattern {
     if (getChannel().getFader().getNormalized() == 0) return;
 
     time += deltaMs;
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       double adjustedX = cube.x / scale.getValue();
       double adjustedY = cube.y / scale.getValue();
       double adjustedZ = cube.z / scale.getValue();
@@ -1176,7 +1176,7 @@ class GalaxyCloud extends TSPattern {
     float initialSpreadMin = hueMid - hueMinExtra;
 
     time += deltaMs;
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float adjustedTheta = cube.transformedTheta / 360;
       float adjustedY = (cube.transformedY - model.yMin) / (model.yMax - model.yMin);
       float adjustedTime = (float)time / 5000;

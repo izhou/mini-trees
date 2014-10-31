@@ -563,7 +563,7 @@ abstract class ModelTransform extends LXEffect {
   ModelTransform(LX lx) {
     super(lx);
 
-    model.addModelTransform(this);
+    Trees.this.model.addModelTransform(this);
   }
 
   void run(double deltaMs) {}

@@ -32,7 +32,7 @@ class Verty extends TSPattern {
     if (getChannel().getFader().getNormalized() == 0) return;
 
     timer = timer + deltaMs;
-    for (Cube cube : model.cubes) {       
+    for (Cube cube : Trees.this.model.cubes) {       
       float saturation;
       float brightness = 1;
     

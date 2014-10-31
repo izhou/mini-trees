@@ -44,7 +44,7 @@ class Pixels extends TSPattern {
     addParameter(pHue);
     addModulator(hueLFO).start();
 
-    int numCubes = model.cubes.size();
+    int numCubes = Trees.this.model.cubes.size();
     pixelStates = new PixelState[numCubes];
     for (int n = 0; n < numCubes; n++)
       pixelStates[n] = new PixelState(lx);
@@ -67,13 +67,13 @@ class Pixels extends TSPattern {
     float firesPerSec = minFiresPerSec + vSpeed * (maxFiresPerSec - minFiresPerSec);
     float timeBetween = 1000 / firesPerSec;
     while (lastFireTime + timeBetween < now) {
-      int which = (int)random(0, model.cubes.size());
+      int which = (int)random(0, Trees.this.model.cubes.size());
       pixelStates[which].fire(now, vLifetime * 1000 + 10, hueLFO.getValuef(), (1 - vSat));
       lastFireTime += timeBetween;
     } 
     
     int i = 0;
-    for (i = 0; i < model.cubes.size(); i++) {
+    for (i = 0; i < Trees.this.model.cubes.size(); i++) {
       colors[i] = pixelStates[i].currentColor(now);
     }
   }
@@ -112,7 +112,7 @@ class Wedges extends TSPattern {
     double sections = Math.floor(1.0 + vCount * 10.0);
     double quant = 360.0/sections;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = LXColor.hsb(
         Math.floor((rotation - cube.transformedTheta) / quant) * quant + vHue * 360.0,
         (1 - vSat) * 100,
@@ -192,7 +192,7 @@ class Parallax extends TSPattern {
         colorBars[i] = new ColorBar(now);
     }
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(0, 0, 0);
 
       for (ColorBar colorBar : colorBars) {

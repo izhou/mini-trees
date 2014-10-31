@@ -1,5 +1,6 @@
 import heronarts.lx.*;
 import heronarts.lx.audio.*;
+import heronarts.lx.color.*;
 import heronarts.lx.effect.*;
 import heronarts.lx.midi.*;
 import heronarts.lx.model.*;
@@ -305,7 +306,7 @@ void configureMIDI() {
 
 void configureUI() {
   // UI initialization
-  lx.ui.addLayer(new UICameraLayer(lx.ui) {
+  lx.ui.addLayer(new UI3dContext(lx.ui) {
       protected void beforeDraw() {
         hint(ENABLE_DEPTH_TEST);
         pushMatrix();
