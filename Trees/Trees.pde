@@ -173,7 +173,7 @@ BooleanParameter[] automationStop = new BooleanParameter[NUM_AUTOMATION];
 DiscreteParameter automationSlot = new DiscreteParameter("AUTO", NUM_AUTOMATION);
 SpeedIndependentContainer speedIndependentContainer;
 
-boolean headless = true;
+boolean headless = false;
 boolean disableAutomation = true;
 boolean disableMainChannels = true;
 
