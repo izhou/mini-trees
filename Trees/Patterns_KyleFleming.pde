@@ -1202,3 +1202,12 @@ class GalaxyCloud extends TSPattern {
     }
   }
 }
+
+class NoPattern extends TSPattern {
+  NoPattern(LX lx) {
+    super(lx);
+  }
+
+  void run(double deltaMs) {
+  }
+}

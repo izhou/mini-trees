@@ -13,7 +13,7 @@ class AppServer {
     Server server = new Server(Trees.this, 5204);
     clientCommunicator.server = server;
 
-    ServerController serverController = new ServerController();
+    ServerController serverController = new ServerController(lx);
     clientModelUpdater = new ClientModelUpdater(lx, clientCommunicator);
     ParseClientTask parseClientTask = new ParseClientTask(server, clientModelUpdater, serverController);
     lx.engine.addLoopTask(parseClientTask);
@@ -55,57 +55,94 @@ class ParseClientTask implements LXLoopTask {
       if (method == null) return;
       if (params == null) params = new HashMap<String, Object>();
 
-      if (method.equals("load-model")) {
+      if (method.equals("loadModel")) {
         clientModelUpdater.sendModel();
-      } else if (method.equals("set-pattern-enabled")) {
-        String name = (String)params.get("name");
-        Boolean enabled = (Boolean)params.get("enabled");
-        if (name == null || enabled == null) return;
-        serverController.setPatternEnabled(name, enabled);
-      } else if (method.equals("set-pattern-strength")) {
-        String name = (String)params.get("name");
-        Double strength = (Double)params.get("strength");
-        if (name == null || strength == null) return;
-        serverController.setPatternStrength(name, strength);
-      } else if (method.equals("set-effect-enabled")) {
-        String name = (String)params.get("name");
-        Boolean enabled = (Boolean)params.get("enabled");
-        if (name == null || enabled == null) return;
-
-        serverController.setEffectEnabled(name, enabled);
+      } else if (method.equals("setChannelPattern")) {
+        Double channelIndex = (Double)params.get("channelIndex");
+        Double patternIndex = (Double)params.get("patternIndex");
+        if (channelIndex == null || patternIndex == null) return;
+        serverController.setChannelPattern(channelIndex.intValue(), patternIndex.intValue());
+      } else if (method.equals("setChannelVisibility")) {
+        Double channelIndex = (Double)params.get("channelIndex");
+        Double visibility = (Double)params.get("visibility");
+        if (channelIndex == null || visibility == null) return;
+        serverController.setChannelVisibility(channelIndex.intValue(), visibility);
+      } else if (method.equals("setActiveColorEffect")) {
+        Double effectIndex = (Double)params.get("effectIndex");
+        if (effectIndex == null) return;
+        serverController.setActiveColorEffect(effectIndex.intValue());
+      } else if (method.equals("setSpeed")) {
+        Double amount = (Double)params.get("amount");
+        if (amount == null) return;
+        serverController.setSpeed(amount);
+      } else if (method.equals("setSpin")) {
+        Double amount = (Double)params.get("amount");
+        if (amount == null) return;
+        serverController.setSpin(amount);
+      } else if (method.equals("setBlur")) {
+        Double amount = (Double)params.get("amount");
+        if (amount == null) return;
+        serverController.setBlur(amount);
+      } else if (method.equals("setStatic")) {
+        Double amount = (Double)params.get("amount");
+        if (amount == null) return;
+        serverController.setStatic(amount);
       }
     } catch (Exception e) {
-      println(e);
+      e.printStackTrace();
     }
   }
 }
 
 class ServerController {
-  void setPatternEnabled(String patternName, boolean enabled) {
-    for (TSPattern pattern : patterns) {
-      if (pattern.getName().equals(patternName)) {
-        if (enabled) {
-          pattern.getTriggerable().onTriggered(1);
-        } else {
-          pattern.getTriggerable().onRelease();
-        }
-      }
+  LX lx;
+
+  ServerController(LX lx) {
+    this.lx = lx;
+  }
+
+  void setChannelPattern(int channelIndex, int patternIndex) {
+    if (patternIndex == -1) {
+      patternIndex = 0;
+    } else {
+      patternIndex++;
+    }
+    lx.engine.getChannel(channelIndex).goIndex(patternIndex);
+  }
+
+  void setChannelVisibility(int channelIndex, double visibility) {
+    lx.engine.getChannel(channelIndex).getFader().setValue(visibility);
+  }
+
+  void setActiveColorEffect(int effectIndex) {
+    if (activeEffectControllerIndex == effectIndex) {
+      return;
+    }
+    if (activeEffectControllerIndex != -1) {
+      TSEffectController effectController = effectControllers.get(activeEffectControllerIndex);
+      effectController.setEnabled(false);
+    }
+    activeEffectControllerIndex = effectIndex;
+    if (activeEffectControllerIndex != -1) {
+      TSEffectController effectController = effectControllers.get(activeEffectControllerIndex);
+      effectController.setEnabled(true);
     }
   }
 
-  void setPatternStrength(String patternName, double strength) {
-    for (TSPattern pattern : patterns) {
-      if (pattern.getName().equals(patternName)) {
-        pattern.getChannel().getFader().setValue(strength);
-      }
-    }
+  void setSpeed(double amount) {
+    speedEffect.speed.setValue(amount);
   }
-  void setEffectEnabled(String effectName, boolean enabled) {
-    for (TSEffectController effectController : effectControllers) {
-      if (effectController.getName().equals(effectName)) {
-        effectController.setEnabled(enabled);
-      }
-    }
+
+  void setSpin(double amount) {
+    spinEffect.spin.setValue(amount);
+  }
+
+  void setBlur(double amount) {
+    blurEffect.amount.setValue(amount);
+  }
+
+  void setStatic(double amount) {
+    staticEffect.amount.setValue(amount);
   }
 }
 
@@ -114,6 +151,7 @@ class ClientModelUpdater {
   LX lx;
 
   ClientModelUpdater(LX lx, ClientCommunicator communicator) {
+    this.lx = lx;
     this.communicator = communicator;
   }
 
@@ -124,31 +162,46 @@ class ClientModelUpdater {
     for (LXChannel channel : lx.engine.getChannels()) {
       Map<String, Object> channelParams = new HashMap<String, Object>();
       channelParams.put("index", channel.getIndex());
-      channelParams.put("current-pattern", channel.getActivePattern());
+      int currentPatternIndex = channel.getNextPatternIndex();
+      if (currentPatternIndex == 0) {
+        currentPatternIndex = -1;
+      } else {
+        currentPatternIndex--;
+      }
+      channelParams.put("currentPatternIndex", currentPatternIndex);
       channelParams.put("visibility", channel.getFader().getValue());
 
       List<Map> patternsParams = new ArrayList<Map>(channel.getPatterns().size());
-      for (int i = 0; i < channel.getPatterns().size(); i++) {
+      for (int i = 1; i < channel.getPatterns().size(); i++) {
         TSPattern pattern = (TSPattern)channel.getPatterns().get(i);
         Map<String, Object> patternParams = new HashMap<String, Object>();
-        patternParams.put("name", pattern.getName());
-        patternParams.put("index", i);
+        patternParams.put("name", pattern.readableName);
+        patternParams.put("index", i-1);
         patternsParams.add(patternParams);
       }
       channelParams.put("patterns", patternsParams);
 
       channelsParams.add(channelParams);
     }
-    returnParams.put("patterns", channelsParams);
+    returnParams.put("channels", channelsParams);
 
     List<Map> effectsParams = new ArrayList<Map>(effectControllers.size());
-    for (TSEffectController effectController : effectControllers) {
+    for (int i = 0; i < effectControllers.size(); i++) {
+      TSEffectController effectController = effectControllers.get(i);
       Map<String, Object> effectParams = new HashMap<String, Object>();
+      effectParams.put("index", i);
       effectParams.put("name", effectController.getName());
-      effectParams.put("enabled", effectController.getEnabled());
       effectsParams.add(effectParams);
     }
-    returnParams.put("effects", effectsParams);
+    returnParams.put("colorEffects", effectsParams);
+
+    int activeColorEffectIndex = activeEffectControllerIndex;
+    returnParams.put("activeColorEffectIndex", effectsParams);
+
+    returnParams.put("speed", speedEffect.speed.getValue());
+    returnParams.put("spin", spinEffect.spin.getValue());
+    returnParams.put("blur", blurEffect.amount.getValue());
+    returnParams.put("static", staticEffect.amount.getValue());
 
     communicator.send("model", returnParams);
   }
