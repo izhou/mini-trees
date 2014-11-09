@@ -14,7 +14,7 @@ class DoubleHelix extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float coilf = coil.getValuef() * (cube.cy - model.cy);
       colors[cube.index] = lx.hsb(
         lx.getBaseHuef() + .4*abs(cube.transformedY - model.cy) +.2* abs(cube.transformedTheta - 180),
@@ -47,7 +47,7 @@ class ColoredLeaves extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(
         (360 + movement[cube.index  % movement.length].getValuef()) % 360,
         100,
@@ -110,7 +110,7 @@ class Twister extends TSPattern {
 
     float spinf = spin.getValuef();
     float coilf = 2*coil(spin.getBasisf());
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float wrapdist = LXUtils.wrapdistf(cube.transformedTheta, spinf + (model.yMax - cube.transformedY)*coilf, 360);
       float yn = (cube.transformedY / model.yMax);
       float width = 10 + 30 * yn;
@@ -161,7 +161,7 @@ class SweepPattern extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float yp = yPos.getValuef() + amp.getValuef() * sin((cube.cx - model.cx) * .01 + offset.getValuef());
       colors[cube.index] = lx.hsb(
         (lx.getBaseHuef() + abs(cube.x - model.cx) * .2 +  cube.cz*.1 + cube.cy*.1) % 360,
@@ -218,7 +218,7 @@ class TestPattern extends TSPattern {
     if (getChannel().getFader().getNormalized() == 0) return;
 
     int ci = 0;
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       setColor(cube, lx.hsb(
         (lx.getBaseHuef() + cube.cx + cube.cy) % 360,
         100,
@@ -243,7 +243,7 @@ class TestCluster extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cluster cluster : model.clusters) {
+    for (Cluster cluster : Trees.this.model.clusters) {
       for (Cube cube : cluster.cubes) {
         if (lightNo.getValuei() >= 17) {
           float d = (lightNo.getValuei() == 17) ?

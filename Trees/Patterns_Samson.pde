@@ -27,7 +27,7 @@ class EQPattern extends TSPattern {
         double d = geq.getAverage(int(lowerFreq.getValuef()),
                                   int(topFreq.getValuef() - lowerFreq.getValuef()));
         double scaled = (d / scale.getValue())*(lx.model.yMax - lx.model.yMin) + lx.model.yMin;
-        for (Cube cube : model.cubes) {
+        for (Cube cube : Trees.this.model.cubes) {
             if (cube.transformedY < (scaled + 5))
                 colors[cube.index] = LXColor.hsb(hue.getValue(), 100, 100);
             else

@@ -68,7 +68,7 @@ class MarkLottor extends TSPattern {
     
     maxballs = int(BALLS * p2v);
     // dim everything already on cube
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         colors[cube.index] = lx.hsb(
           LXColor.h(colors[cube.index]),
           LXColor.s(colors[cube.index]),
@@ -76,7 +76,7 @@ class MarkLottor extends TSPattern {
       }
       /*
     // dim everything already on cube
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         colors[cube.index] = lx.hsb(0,0,0);
       }
       */
@@ -118,7 +118,7 @@ class MarkLottor extends TSPattern {
       y     = balls[n].getposy();
 
       // light up any cubes "near" this ball
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
 	if ((abs(theta - cube.transformedTheta) < (50*p1v)) &&
 	    (abs(y - cube.transformedY) < (50*p1v)))
 	  colors[cube.index] = balls[n].getcolor();
@@ -126,7 +126,7 @@ class MarkLottor extends TSPattern {
     }
 
     /*
-    for (Tree tree : model.trees) {
+    for (Tree tree : Trees.this.model.trees) {
       // There will be two passes through this loop, one for each tree
       if (tree.index == 1) {
         // Make second tree rotate the other way
@@ -156,8 +156,8 @@ class MarkLottor extends TSPattern {
     */
   }
 
-  Triggerable getTriggerable() {
-    return new ParameterTriggerableAdapter(getChannel().getFader()) {
+  void onTriggerableModeEnabled() {
+    parameterTriggerableAdapter = new ParameterTriggerableAdapter(getChannel().getFader()) {
       public void onTriggered(float strength) {
         if (!isFresh) {
           for (n = 0; n < BALLS; n++)

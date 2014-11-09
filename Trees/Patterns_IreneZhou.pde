@@ -97,7 +97,7 @@ class Fireflies extends TSTriggerablePattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(
         0,
         0,
@@ -136,7 +136,7 @@ class Fireflies extends TSTriggerablePattern {
     }
 
     for (Firefly fly:fireflies) {
-      for (Cube cube: model.cubes) {
+      for (Cube cube: Trees.this.model.cubes) {
         if (abs(fly.yPos - cube.transformedY) <= radius && abs(fly.theta - cube.transformedTheta) <= radius) {
           float distSq = pow((LXUtils.wrapdistf(fly.theta, cube.transformedTheta, 360)), 2) + pow(fly.yPos - cube.transformedY, 2);
           float brt = max(0, 100 - sqrt(distSq * 4) - blinkers[fly.blinkIndex].getValuef());
@@ -196,7 +196,7 @@ class Lattice extends TSPattern {
 
     float spinf = spin.getValuef();
     float coilf = 2*coil(spin.getBasisf());
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float wrapdistleft = LXUtils.wrapdistf(cube.transformedTheta, spinf + (model.yMax - cube.transformedY) * coilf, 180);
       float wrapdistright = LXUtils.wrapdistf(cube.transformedTheta, -spinf - (model.yMax - cube.transformedY) * coilf, 180);
       float width = yClimb.getValuef() + ((cube.transformedY - yHeight.getValuef())/model.yMax) * 50;
@@ -284,7 +284,7 @@ class Fire extends TSTriggerablePattern {
       }
     }
 
-    for (Cube cube: model.cubes) {
+    for (Cube cube: Trees.this.model.cubes) {
       float yn = cube.transformedY / model.yMax;
       float cBrt = 0;
       float cHue = 0;
@@ -383,7 +383,7 @@ class Bubbles extends TSTriggerablePattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       colors[cube.index] = lx.hsb(
         0,
         0,
@@ -411,7 +411,7 @@ class Bubbles extends TSTriggerablePattern {
     }
       
     for (Bubble bubble: bubbles) {
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         if (abs(bubble.theta - cube.transformedTheta) < bubble.radius && abs(bubble.yPos - (cube.transformedY - model.yMin)) < bubble.radius) {
           float distTheta = LXUtils.wrapdistf(bubble.theta, cube.transformedTheta, 360) * 0.8;
           float distY = bubble.yPos - (cube.transformedY - model.yMin);
@@ -489,7 +489,7 @@ class Voronoi extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube: model.cubes) {
+    for (Cube cube: Trees.this.model.cubes) {
       float minDistSq = 1000000;
       float nextMinDistSq = 1000000;
       for (int i = 0; i < sites.length; ++i) {
@@ -557,7 +557,7 @@ class Cells extends TSPattern {
   public void run(double deltaMs) {
     if (getChannel().getFader().getNormalized() == 0) return;
 
-    for (Cube cube: model.cubes) {
+    for (Cube cube: Trees.this.model.cubes) {
       float minDistSq = 1000000;
       float nextMinDistSq = 1000000;
       for (int i = 0; i < sites.length; ++i) {
@@ -630,7 +630,7 @@ class Fumes extends TSPattern {
     if (getChannel().getFader().getNormalized() == 0) return;
     
     float minSat = sat.getValuef();
-    for (Cube cube: model.cubes) {
+    for (Cube cube: Trees.this.model.cubes) {
       float minDistSq = 1000000;
       float nextMinDistSq = 1000000;
       for (int i = 0; i < sites.length; ++i) {
@@ -755,7 +755,7 @@ class Pulley extends TSTriggerablePattern { //ported from SugarCubes
       }
   
       float falloff = 100. / (3 + sz.getValuef() * 36 + fPos * beatAmount.getValuef()*48);
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         int gi = (int) constrain((cube.x - model.xMin) * NUM_DIVISIONS / (model.xMax - model.xMin), 0, NUM_DIVISIONS-1);
         float yn =  cube.transformedY/model.yMax;
         colors[cube.index] = lx.hsb(
@@ -843,7 +843,7 @@ class Springs extends TSPattern {
     float spinf = spin.getValuef();
     float coilf = 2*coil(spin.getBasisf());
     
-    for (Cube cube : model.cubes) {
+    for (Cube cube : Trees.this.model.cubes) {
       float yn =  cube.transformedY/model.yMax;
       float width = (1-yn) * 25;
       float wrapdist = LXUtils.wrapdistf(cube.transformedTheta, spinf + (cube.transformedY) * 1/(gravity.getValuef() + 0.2), 360);
@@ -1005,7 +1005,7 @@ class Pulleys extends TSTriggerablePattern { //ported from SugarCubes
       }
   
       float falloff = 100. / (3 + sz.getValuef() * 36 + fPos * beatAmount.getValuef()*48);
-      for (Cube cube : model.cubes) {
+      for (Cube cube : Trees.this.model.cubes) {
         float cBrt = 0;
         float cHue = 0;
         for (int j = 0; j < pulleys.length; ++j) {
@@ -1084,7 +1084,7 @@ class Pulleys extends TSTriggerablePattern { //ported from SugarCubes
 //  }
 //
 //  void transform(Model model) {
-//    for (Cube cube: model.cubes) {
+//    for (Cube cube: Trees.this.model.cubes) {
 //      cube.transformedY = cube.transformedY * ( 1 - ripple.getValuef() * amplitude.getValuef() * sin((cube.transformedTheta + rotate) / 30 * PI ));
 //    }
 //  }
@@ -1122,7 +1122,7 @@ class Pulleys extends TSTriggerablePattern { //ported from SugarCubes
 //       resetDone = false;
 //     }
 //     float radius = pow(rippleAge.getValuef(), 2) / 3;
-//     for (Cube cube : model.cubes) {
+//     for (Cube cube : Trees.this.model.cubes) {
 //       float distVal = sqrt(pow((LXUtils.wrapdistf(thetaCenter, cube.transformedTheta, 360)) * 0.8, 2) + pow(yCenter - cube.transformedY, 2));
 //       float heightHueVariance = 0.1 * cube.transformedY;
 //       if (distVal < radius){
