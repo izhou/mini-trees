@@ -65,36 +65,36 @@ final static String CLUSTER_CONFIG_FILE = "data/clusters.json";
 
 void registerPatternTriggerables() {
   registerPattern("None", new NoPattern(lx));
-  registerPattern("Twister", new Twister(lx));
+  // registerPattern("Twister", new Twister(lx));
   // registerPattern(new MarkLottor(lx));
-  registerPattern("Ripple", new Ripple(lx));
-  registerPattern("Stripes", new Stripes(lx));
-  registerPattern("Lattice", new Lattice(lx));
-  registerPattern("Fumes", new Fumes(lx));
-  registerPattern("Voronoi", new Voronoi(lx));
-  registerPattern("Candy Cloud", new CandyCloud(lx));
-  registerPattern("Galaxy Cloud", new GalaxyCloud(lx));
+  // registerPattern("Ripple", new Ripple(lx));
+  // registerPattern("Stripes", new Stripes(lx));
+  // registerPattern("Lattice", new Lattice(lx));
+  // registerPattern("Fumes", new Fumes(lx));
+  // registerPattern("Voronoi", new Voronoi(lx));
+  // registerPattern("Candy Cloud", new CandyCloud(lx));
+  // registerPattern("Galaxy Cloud", new GalaxyCloud(lx));
 
-  registerPattern("Color Strobe", new ColorStrobe(lx));
-  registerPattern("Strobe", new Strobe(lx));
-  registerPattern("Sparkle Takeover", new SparkleTakeOver(lx));
-  registerPattern("Multi-Sine", new MultiSine(lx));
-  registerPattern("Seesaw", new SeeSaw(lx));
-  registerPattern("Cells", new Cells(lx));
-  registerPattern("Fade", new Fade(lx));
+  // registerPattern("Color Strobe", new ColorStrobe(lx));
+  // registerPattern("Strobe", new Strobe(lx));
+  // registerPattern("Sparkle Takeover", new SparkleTakeOver(lx));
+  // registerPattern("Multi-Sine", new MultiSine(lx));
+  // registerPattern("Seesaw", new SeeSaw(lx));
+  // registerPattern("Cells", new Cells(lx));
+  // registerPattern("Fade", new Fade(lx));
   
-  // registerPattern(new IceCrystals(lx));
-  registerPattern("Fire", new Fire(lx));
+  // // registerPattern(new IceCrystals(lx));
+  // registerPattern("Fire", new Fire(lx));
 
-  registerPattern("Acid Trip", new AcidTrip(lx));
-  registerPattern("Rain", new Rain(lx));
-  registerPattern("Bass Slam", new BassSlam(lx));
+  // registerPattern("Acid Trip", new AcidTrip(lx));
+  // registerPattern("Rain", new Rain(lx));
+  // registerPattern("Bass Slam", new BassSlam(lx));
 
   registerPattern("Fireflies", new Fireflies(lx));
-  registerPattern("Bubbles", new Bubbles(lx));
+  // registerPattern("Bubbles", new Bubbles(lx));
   // registerPattern(new Lightning(lx));
-  registerPattern("Wisps", new Wisps(lx));
-  registerPattern("Explosions", new Explosions(lx));
+  // registerPattern("Wisps", new Wisps(lx));
+  // registerPattern("Explosions", new Explosions(lx));
 
   // registerPattern(new Explosions(lx, 20));
   // registerPattern(new Wisps(lx, 1, 60, 50, 270, 20, 3.5, 10)); // downward yellow wisp
