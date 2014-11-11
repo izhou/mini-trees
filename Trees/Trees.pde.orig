@@ -191,9 +191,9 @@ void setup() {
   lx = new P2LX(this, model);
   lx.engine.addLoopTask(speedIndependentContainer = new SpeedIndependentContainer(lx));
 
-  configureTriggerables();
+  //configureTriggerables();
 
-  lx.engine.removeChannel(lx.engine.getDefaultChannel());
+  //lx.engine.removeChannel(lx.engine.getDefaultChannel());
 
   if (!headless) {
     lx.addEffect(mappingTool = new MappingTool(lx));
@@ -201,7 +201,7 @@ void setup() {
   lx.engine.addLoopTask(new ModelTransformTask());
 
   if (disableAutomation) {
-    configureAutomation();
+    //configureAutomation();
   }
 
   configureFadeCandyOutput();
@@ -210,7 +210,7 @@ void setup() {
     configureUI();
   }
 
-  configureRPC();
+  //configureRPC();
   
   lx.engine.setThreaded(true);
 }
